@@ -3,11 +3,11 @@
 <section id="content_wordsmith">
 {{#post}}
 	<article class="article_wordsmith" role="article" itemscope itemtype="http://schema.org/Article">
-		
+
 		<time class="date_wordsmith helv_wordsmith" datetime="{{date format='DD MMM YYYY'}}" itemprop="datePublished">{{date format='DD MMM YYYY'}}</time>{{#if tags}}<span class="helv_wordsmith"> on {{tags separator=", "}}</span>{{/if}}
-		
+
 		<h1 class="posttitle_wordsmith" itemprop="headline">{{title}}</h1>
-		
+
 		<div class="postcontent_wordsmith">
 			{{content}}
 		</div>
@@ -28,9 +28,22 @@
 		    </address>
 	    </div>
 	    {{/if}}
-		
 	</article>
 {{/post}}
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'hitcl'; // required: replace example with your forum shortname
+    var disqus_identifier = '{{post.id}}';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>
 
 {{#if pagination}}
