@@ -50,3 +50,6 @@ CHANGELOG.md
 
 # Coverage reports
 coverage.html
+
+# ignore images added in local testing
+/content/images/*
