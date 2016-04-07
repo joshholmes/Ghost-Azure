@@ -8,6 +8,7 @@ var _               = require('lodash'),
     api             = require('../api'),
     jsonpath        = require('jsonpath'),
     labs            = require('../utils/labs'),
+    i18n            = require('../i18n'),
     resources,
     pathAliases,
     get;
@@ -99,13 +100,13 @@ get = function get(context, options) {
         apiMethod;
 
     if (!options.fn) {
-        data.error = 'Get helper must be called as a block';
+        data.error = i18n.t('warnings.helpers.get.mustBeCalledAsBlock');
         errors.logWarn(data.error);
         return Promise.resolve();
     }
 
     if (!_.contains(resources, context)) {
-        data.error = 'Invalid resource given to get helper';
+        data.error = i18n.t('warnings.helpers.get.invalidResource');
         errors.logWarn(data.error);
         return Promise.resolve(options.inverse(self, {data: data}));
     }
@@ -124,9 +125,10 @@ get = function get(context, options) {
         }
 
         // block params allows the theme developer to name the data using something like
-        // `{{#get "posts" as |result pagination|}}`
+        // `{{#get "posts" as |result pageInfo|}}`
         blockParams = [result[context]];
         if (result.meta && result.meta.pagination) {
+            result.pagination = result.meta.pagination;
             blockParams.push(result.meta.pagination);
         }
 
@@ -144,20 +146,18 @@ get = function get(context, options) {
 module.exports = function getWithLabs(context, options) {
     var self = this,
         errorMessages = [
-            'The {{get}} helper is not available.',
-            'Public API access must be enabled if you wish to use the {{get}} helper.',
-            'See http://support.ghost.org/public-api-beta'
+            i18n.t('warnings.helpers.get.helperNotAvailable'),
+            i18n.t('warnings.helpers.get.apiMustBeEnabled'),
+            i18n.t('warnings.helpers.get.seeLink', {url: 'http://support.ghost.org/public-api-beta'})
         ];
 
-    return labs.isSet('publicAPI').then(function (publicAPI) {
-        if (publicAPI === true) {
-            // get helper is  active
-            return get.call(self, context, options);
-        } else {
-            errors.logError.apply(this, errorMessages);
-            return Promise.resolve(function noGetHelper() {
-                return '<script>console.error("' + errorMessages.join(' ') + '");</script>';
-            });
-        }
-    });
+    if (labs.isSet('publicAPI') === true) {
+        // get helper is  active
+        return get.call(self, context, options);
+    } else {
+        errors.logError.apply(this, errorMessages);
+        return Promise.resolve(function noGetHelper() {
+            return '<script>console.error("' + errorMessages.join(' ') + '");</script>';
+        });
+    }
 };
